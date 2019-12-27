@@ -62,6 +62,13 @@ function sendMessage() {
 	sendMessageToHub(message);
 };
 
+function dateTimeDisplay(dateTime) {
+	var arrayDate = dateTime.split(' ');
+	var date = arrayDate[0].split('-');
+	var time = arrayDate[1].split(':');
+	return date[2] + '-' + date[1] + ' ' + time[0] + ':' + time[1];
+}
+
 function addMessageToChat(message) {
 	let container = document.createElement('div');
 	container.className = 'd-flex justify-content-start mb-4';
@@ -83,14 +90,20 @@ function addMessageToChat(message) {
 
 	let timeContainer = document.createElement('span');
 	timeContainer.className = 'msg_time';
-	timeContainer.innerHTML = message.createdAt;
+	timeContainer.innerHTML = dateTimeDisplay(message.createdAt);
 
 	imgContainer.appendChild(img);
 	msgContainer.appendChild(timeContainer);
 	container.appendChild(imgContainer);
 	container.appendChild(usernameContainer);
 	container.appendChild(msgContainer);
-	document.getElementById('chat').appendChild(container);
+
+	let chatChildNodes = chat.getElementsByClassName('d-flex');
+	if (chatChildNodes.length > 200) {
+		chatChildNodes[0].remove();
+	}
+		
+	chat.appendChild(container);
 	chat.scrollTop = chat.scrollHeight;
 };
 

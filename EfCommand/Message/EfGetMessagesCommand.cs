@@ -19,12 +19,15 @@ namespace EfCommand.Message
 
         public async Task<IEnumerable<MessageDto>> Execute(MessageQuery request)
         {
-            return await Context.Messages.Select(m => new MessageDto
-            {
-                Text = m.Text,
-                CreatedAt = m.CreatedAt,
-                Username = m.User.UserName
-            }).ToListAsync();
+            var messageSkipVal = Context.Messages.Count() - 200;
+            var messagesSkip = (messageSkipVal >= 0) ? messageSkipVal : 0;
+            return await Context.Messages.Skip(messagesSkip)
+                .Select(m => new MessageDto
+                {
+                    Text = m.Text,
+                    CreatedAt = m.CreatedAt,
+                    Username = m.User.UserName
+                }).ToListAsync();
         }
     }
 }
