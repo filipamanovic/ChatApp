@@ -28,7 +28,8 @@ namespace EfCommand.User
             {
                 UserID = u.Id,
                 Username = u.UserName,
-                IsLogged = u.IsLoged
+                IsLogged = u.IsLoged,
+                ImagePath = u.ImagePath
             }).OrderBy(u => !u.IsLogged).ToListAsync();
         }
     }

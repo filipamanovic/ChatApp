@@ -17,6 +17,7 @@ using DataAccess;
 using Application.Commands.Message;
 using Application.Queries.Message;
 using Application.Dto.Message;
+using Application.Helpers;
 
 namespace ChatAppAsp.Controllers
 {
@@ -27,16 +28,24 @@ namespace ChatAppAsp.Controllers
         private readonly UserModel _userModel;
         private readonly IGetMessagesCommand _getMessages;
         private readonly ICreateMessageCommand _createMessage;
+        private readonly IGetOneUserCommand _getOneUser;
+        private readonly IEditUserCommand _editUser;
+        private readonly ImageUpload _imageUpload;
 
         public HomeController(UserManager<User> userManager, 
             IGetUsersCommand getUsers, UserModel userModel, 
-            IGetMessagesCommand getMessages, ICreateMessageCommand createMessage)
+            IGetMessagesCommand getMessages, ICreateMessageCommand createMessage,
+            IGetOneUserCommand getOneUserCommand, IEditUserCommand editUserCommand,
+            ImageUpload imageUpload)
         {
             _userManager = userManager;
             _getUsers = getUsers;
             _userModel = userModel;
             _getMessages = getMessages;
             _createMessage = createMessage;
+            _getOneUser = getOneUserCommand;
+            _editUser = editUserCommand;
+            _imageUpload = imageUpload;
         }
 
         public async Task<ActionResult> Index([FromQuery] UserQuery userQuery, MessageQuery messageQuery)
@@ -52,6 +61,62 @@ namespace ChatAppAsp.Controllers
             messageCreate.UserID = user.Id;
             await _createMessage.Execute(messageCreate);
             return Ok();
+        }
+
+        public async Task<IActionResult> Edit()
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                var userData = await _getOneUser.Execute(user.Id);
+                return View(userData);
+            }
+            catch (EntityNotFoundException e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Index");
+            }
+            catch (Exception e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Index");
+            }
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit([FromForm] UserEdit userEdit)
+        {
+            try
+            {
+                var user = await _userManager.GetUserAsync(User);
+                userEdit.Id = user.Id;
+                userEdit.ImagePath = await _imageUpload.uploadImage(userEdit.Image);
+                await _editUser.Execute(userEdit);
+                TempData["msg"] = "Succesfully edited user";
+                return RedirectToAction("Index");
+            }
+            catch (EntityAlreadyExistException e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Edit");
+            }
+            catch (ImageExtensionNotAllowedException e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Edit");
+            }
+            catch (ImageFileSizeNotAllowedException e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Edit");
+            }
+            catch (Exception e)
+            {
+                TempData["msg"] = e.Message;
+                return RedirectToAction("Index");
+            }
+
         }
     }
 }

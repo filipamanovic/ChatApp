@@ -20,6 +20,7 @@ namespace DataAccess
         {
             base.OnModelCreating(builder);
             builder.ApplyConfiguration(new MessageConfiguration());
+            builder.ApplyConfiguration(new UserConfiguration());
         }
     }
 }

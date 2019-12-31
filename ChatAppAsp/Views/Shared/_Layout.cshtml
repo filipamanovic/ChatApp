@@ -25,7 +25,7 @@
                         @if (User.Identity.IsAuthenticated)
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark">@User.Identity.Name</a>
+                                <a class="nav-link text-dark" asp-controller="Home" asp-action="Edit">Edit profile</a>
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout" asp-route-username="@User.Identity.Name">Logout</a>
