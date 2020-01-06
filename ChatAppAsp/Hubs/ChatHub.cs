@@ -1,4 +1,6 @@
-﻿using Application.Dto.Message;
+﻿using Application.Commands.User;
+using Application.Dto.Message;
+using Application.Dto.User;
 using DataAccess;
 using Microsoft.AspNetCore.SignalR;
 using System;
@@ -13,5 +15,7 @@ namespace ChatAppAsp.Hubs
         public async Task SendMessage(MessageJsToHub message) =>
             await Clients.All.SendAsync("receiveMessage", message);
 
+        public async Task SendProfile(UserDisplay profileUpdate) =>
+            await Clients.Others.SendAsync("receiveProfile", profileUpdate);
     }
 }

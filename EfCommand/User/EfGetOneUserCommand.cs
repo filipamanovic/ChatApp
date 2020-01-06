@@ -27,7 +27,8 @@ namespace EfCommand.User
                 City = user.City,
                 FirstName = user.FirstName,
                 LastName = user.LastName,
-                Username = user.UserName
+                Username = user.UserName,
+                Password = user.PasswordHash
             };
         }
     }

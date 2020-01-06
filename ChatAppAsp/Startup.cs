@@ -52,6 +52,7 @@ namespace ChatAppAsp
             services.AddTransient<IGetUsersCommand, EfGetUsersCommand>();
             services.AddTransient<IGetOneUserCommand, EfGetOneUserCommand>();
             services.AddTransient<IEditUserCommand, EfEditUserCommand>();
+            services.AddTransient<IGetUserByUsernameCommand, EfGetUserByUsernameCommand>();
 
             //Message
             services.AddTransient<IGetMessagesCommand, EfGetMessagesCommand>();
@@ -60,6 +61,7 @@ namespace ChatAppAsp
             //Helpers
             services.AddSingleton<UserModel>();
             services.AddSingleton<ImageUpload>();
+            services.AddSingleton<ChatHub>();
 
             services.AddSignalR();
 

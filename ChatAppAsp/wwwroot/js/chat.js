@@ -5,16 +5,18 @@
 });
 
 class Message {
-	constructor(Username, Text, CreatedAt) {
+	constructor(Username, Text, CreatedAt, ImagePath) {
 		this.Username = Username;
 		this.Text = Text;
 		this.CreatedAt = CreatedAt;
+		this.ImagePath = ImagePath;
 	}
 }
 
 const username = document.getElementById('Username');
 const textInput = document.getElementById('messageText');
 const createdAt = document.getElementById('createdAt');
+const ImagePath = document.getElementById('ImagePath');
 const messagesQueue = [];
 
 let chat = document.getElementById('chat');
@@ -58,7 +60,7 @@ function sendMessage() {
 	if (text.trim() === "") return;
 	let createdAt = getDate();
 
-	let message = new Message(username.value, text, createdAt);
+	let message = new Message(username.value, text, createdAt, ImagePath.value);
 	sendMessageToHub(message);
 };
 
@@ -66,7 +68,7 @@ function dateTimeDisplay(dateTime) {
 	var arrayDate = dateTime.split(' ');
 	var date = arrayDate[0].split('-');
 	var time = arrayDate[1].split(':');
-	return date[2] + '-' + date[1] + ' ' + time[0] + ':' + time[1];
+	return date[2] + '/' + date[1] + ' ' + time[0] + ':' + time[1];
 }
 
 function addMessageToChat(message) {
@@ -78,7 +80,11 @@ function addMessageToChat(message) {
 
 	let img = document.createElement('img');
 	img.className = 'rounded-circle user_img_msg';
-	img.src = 'https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg';
+	if (message.imagePath != "") {
+		img.src = '/uploads/' + message.imagePath;
+	} else {
+		img.src = 'https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg';
+	}
 
 	let usernameContainer = document.createElement('div');
 	usernameContainer.className = 'msg_cotainer_username'
@@ -106,5 +112,6 @@ function addMessageToChat(message) {
 	chat.appendChild(container);
 	chat.scrollTop = chat.scrollHeight;
 };
+
 
 

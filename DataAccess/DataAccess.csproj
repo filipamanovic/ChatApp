@@ -7,6 +7,10 @@
   <ItemGroup>
     <Compile Remove="Migrations\20191212143356_initial-migration.cs" />
     <Compile Remove="Migrations\20191212143356_initial-migration.Designer.cs" />
+    <Compile Remove="Migrations\20200102113126_logout time.cs" />
+    <Compile Remove="Migrations\20200102113126_logout time.Designer.cs" />
+    <Compile Remove="Migrations\20200102114337_logout time.cs" />
+    <Compile Remove="Migrations\20200102114337_logout time.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

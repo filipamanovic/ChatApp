@@ -26,7 +26,8 @@ namespace EfCommand.Message
                 {
                     Text = m.Text,
                     CreatedAt = m.CreatedAt,
-                    Username = m.User.UserName
+                    Username = m.User.UserName,
+                    ImagePath = m.User.ImagePath
                 }).ToListAsync();
         }
     }

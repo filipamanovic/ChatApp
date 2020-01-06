@@ -29,7 +29,8 @@ namespace EfCommand.User
                 UserID = u.Id,
                 Username = u.UserName,
                 IsLogged = u.IsLoged,
-                ImagePath = u.ImagePath
+                ImagePath = u.ImagePath,
+                LogoutTime = u.LogoutTime
             }).OrderBy(u => !u.IsLogged).ToListAsync();
         }
     }

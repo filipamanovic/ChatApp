@@ -1,6 +1,11 @@
 ﻿@model UserModel;
 @{
     ViewData["Title"] = "Home Page";
+    var currentUserImage = "NULL";
+    if (User.Identity.IsAuthenticated)
+    {
+        currentUserImage = Model.Users.Where(u => u.Username.ToLower() == User.Identity.Name.ToLower()).First().ImagePath;
+    }
 }
 
 <body>
@@ -17,10 +22,10 @@
                         </div>
                     </div>
                     <div class="card-body contacts_body">
-                        <ui class="contacts">
+                        <ui class="contacts" id="contacts">
                             @foreach (var user in Model.Users)
                             {
-                                <li>
+                                <li id="@user.UserID">
                                     <div class="d-flex bd-highlight">
                                         <div class="img_cont">
                                             @if (user.ImagePath != null)
@@ -43,7 +48,10 @@
                                         </div>
                                         <div class="user_info">
                                             <span>@user.Username</span>
-                                            <p>Taherah left 7 mins ago</p>
+                                            @if (user.LogoutTime != null)
+                                            {
+                                                <p>Last active at @user.LogoutTime.Value.ToString("dd/MM HH:mm") </p>
+                                            }
                                         </div>
                                     </div>
                                 </li>
@@ -61,27 +69,34 @@
                         {
                             <div class="d-flex justify-content-start mb-4">
                                 <div class="img_cont_msg">
-                                    <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
+                                    @if (message.ImagePath != null)
+                                    {
+                                        <img src="~/uploads/@message.ImagePath" class="rounded-circle user_img_msg">
+                                    }
+                                    else
+                                    {
+                                        <img src="https://static.turbosquid.com/Preview/001292/481/WV/_D.jpg" class="rounded-circle user_img_msg">
+                                    }
                                 </div>
                                 <div class="msg_cotainer_username">
                                     @message.Username
                                 </div>
                                 <div class="msg_cotainer">
                                     @message.Text
-                                    <span class="msg_time">@message.CreatedAt.Day-@message.CreatedAt.Month @message.CreatedAt.Hour:@message.CreatedAt.Minute</span>
+                                    <span class="msg_time">@message.CreatedAt.Day/@message.CreatedAt.Month @message.CreatedAt.Hour:@message.CreatedAt.Minute</span>
                                 </div>
                             </div>
                         }
                     </div>
                     <div class="card-footer">
                         <form asp-action="Create"
-                            data-ajax-begin="clearInputField"
-                                data-ajax-complete=""
-                                data-ajax-failure="alert('Fail')"
-                                data-ajax-success="sendMessage"
-                                data-ajax="true"
-                                data-ajax-method="POST">
-                                
+                              data-ajax-begin="clearInputField"
+                              data-ajax-complete=""
+                              data-ajax-failure="alert('Fail')"
+                              data-ajax-success="sendMessage"
+                              data-ajax="true"
+                              data-ajax-method="POST">
+
                             <div class="input-group">
                                 <input type="text" class="form-control type_msg" placeholder="Type your message..." id="messageText" name="Text" />
                                 <div class="input-group-append">
@@ -95,7 +110,8 @@
                                     }
                                 </div>
                                 <input type="hidden" value="@User.Identity.Name" name="Username" id="Username" />
-                                <input type="hidden" id="createdAt"/>
+                                <input type="hidden" id="createdAt" />
+                                <input type="hidden" value="@currentUserImage" id="ImagePath" />
                             </div>
                         </form>
                     </div>
@@ -105,11 +121,7 @@
     </div>
 </body>
 @section Scripts {
-    <script type="text/javascript" src="~/signalr/signalr.min.js"></script>
-    <script type="text/javascript" src="~/lib/jquery/dist/jquery-unobtrusive-ajax.min.js"></script>
     <script type="text/javascript" src="~/js/chat.js"></script>
-    <script type="text/javascript" src="~/js/signrReqHandler.js"></script>
-
 }
 
 

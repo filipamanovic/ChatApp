@@ -23,6 +23,14 @@ namespace EfCommand.User
             if (user == null)
                 throw new EntityNotFoundException(username);
 
+            if (isLogged)
+            {
+                user.LogoutTime = null;
+            } else
+            {
+                user.LogoutTime = DateTime.Now;
+            }
+
             user.IsLoged = isLogged;
 
             await Context.SaveChangesAsync();

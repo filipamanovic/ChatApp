@@ -1,5 +1,4 @@
 ﻿//Lista usera levo!
-
 <li class="active">
                                     <div class="d-flex bd-highlight">
                                         <div class="img_cont">
@@ -154,3 +153,11 @@
                             </ul>
                         </div>
                     </div>*@
+//Ajax za profile update
+    data-ajax-begin="getUsername"
+              data-ajax-complete=""
+              data-ajax-failure="alert('Fail')"
+              data-ajax-success="sendMessage"
+              data-ajax="true"
+              data-ajax-method="POST"
+

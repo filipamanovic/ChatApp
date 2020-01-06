@@ -29,7 +29,8 @@
                             </li>
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-controller="Auth" asp-action="Logout" asp-route-username="@User.Identity.Name">Logout</a>
-                            </li>                                                      
+                            </li>
+
                         }
                         else
                         {
@@ -47,7 +48,7 @@
     </header>
     <div class="container">
         <main role="main" class="pb-3">
-            @if(TempData["msg"] != null)
+            @if (TempData["msg"] != null)
             {
                 <p class="alert-info">@TempData["msg"]</p>
             }
@@ -57,12 +58,17 @@
 
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; 2019 - ChatApp 
+            &copy; 2019 - ChatApp
         </div>
     </footer>
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
+    <script type="text/javascript" src="~/signalr/signalr.min.js"></script>
+    <script type="text/javascript" src="~/lib/jquery/dist/jquery-unobtrusive-ajax.min.js"></script>
+    <script type="text/javascript" src="~/js/profileUpdate.js"></script>
     @RenderSection("Scripts", required: false)
+    <script type="text/javascript" src="~/js/signrReqHandler.js"></script>
+
 </body>
 </html>

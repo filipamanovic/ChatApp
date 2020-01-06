@@ -12,3 +12,8 @@ connection.start()
 function sendMessageToHub(message) {
     connection.invoke('SendMessage', message);
 };
+
+
+connection.on('receiveProfile', updateProfile);
+
+

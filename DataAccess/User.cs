@@ -12,6 +12,7 @@ namespace DataAccess
         public string LastName { get; set; }
         public string City { get; set; }
         public string ImagePath { get; set; }
+        public DateTime? LogoutTime { get; set; }
 
         public ICollection<Message> Messages { get; set; }
     }

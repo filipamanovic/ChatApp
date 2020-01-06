@@ -10,5 +10,6 @@ namespace Application.Dto.User
         public string Username { get; set; }
         public bool IsLogged { get; set; }
         public string ImagePath { get; set; }
+        public DateTime? LogoutTime { get; set; }
     }
 }

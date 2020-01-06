@@ -19,5 +19,6 @@ namespace Application.Dto.User
         public string City { get; set; }
         public IFormFile Image { get; set; }
         public string ImagePath { get; set; }
+        public string Password { get; set; }
     }
 }

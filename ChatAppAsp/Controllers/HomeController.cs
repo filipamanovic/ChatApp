@@ -18,12 +18,14 @@ using Application.Commands.Message;
 using Application.Queries.Message;
 using Application.Dto.Message;
 using Application.Helpers;
+using ChatAppAsp.Hubs;
 
 namespace ChatAppAsp.Controllers
 {
     public class HomeController : Controller
     {
         private readonly UserManager<User> _userManager;
+        private readonly SignInManager<User> _signInManager;
         private readonly IGetUsersCommand _getUsers;
         private readonly UserModel _userModel;
         private readonly IGetMessagesCommand _getMessages;
@@ -31,12 +33,15 @@ namespace ChatAppAsp.Controllers
         private readonly IGetOneUserCommand _getOneUser;
         private readonly IEditUserCommand _editUser;
         private readonly ImageUpload _imageUpload;
+        private readonly ChatHub _chatHub;
+        private readonly IGetUserByUsernameCommand _getUserByUsername;
 
-        public HomeController(UserManager<User> userManager, 
-            IGetUsersCommand getUsers, UserModel userModel, 
+        public HomeController(UserManager<User> userManager,
+            IGetUsersCommand getUsers, UserModel userModel,
             IGetMessagesCommand getMessages, ICreateMessageCommand createMessage,
             IGetOneUserCommand getOneUserCommand, IEditUserCommand editUserCommand,
-            ImageUpload imageUpload)
+            ImageUpload imageUpload, ChatHub chatHub, IGetUserByUsernameCommand getUserByUsernameCommand,
+            SignInManager<User> signInManager)
         {
             _userManager = userManager;
             _getUsers = getUsers;
@@ -46,6 +51,9 @@ namespace ChatAppAsp.Controllers
             _getOneUser = getOneUserCommand;
             _editUser = editUserCommand;
             _imageUpload = imageUpload;
+            _chatHub = chatHub;
+            _getUserByUsername = getUserByUsernameCommand;
+            _signInManager = signInManager;
         }
 
         public async Task<ActionResult> Index([FromQuery] UserQuery userQuery, MessageQuery messageQuery)
@@ -89,11 +97,17 @@ namespace ChatAppAsp.Controllers
         {
             try
             {
+                await _signInManager.SignOutAsync();
                 var user = await _userManager.GetUserAsync(User);
                 userEdit.Id = user.Id;
                 userEdit.ImagePath = await _imageUpload.uploadImage(userEdit.Image);
                 await _editUser.Execute(userEdit);
                 TempData["msg"] = "Succesfully edited user";
+                var editedUser = await _getOneUser.Execute(user.Id);
+                var profileUpdate = await _getUserByUsername.Execute(editedUser.Username);
+                await _chatHub.SendProfile(profileUpdate);
+                var userJedi = await _userManager.FindByNameAsync(profileUpdate.Username);
+                await _signInManager.SignInAsync(userJedi, false);
                 return RedirectToAction("Index");
             }
             catch (EntityAlreadyExistException e)

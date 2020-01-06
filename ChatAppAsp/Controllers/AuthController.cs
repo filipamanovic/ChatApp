@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Application.Commands.User;
 using Application.Dto.User;
+using ChatAppAsp.Hubs;
 using DataAccess;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -15,13 +16,18 @@ namespace ChatAppAsp.Controllers
         private readonly UserManager<User> _userManager;
         private readonly SignInManager<User> _signInManager;
         private readonly ISetUserStatusCommand _setUserStatus;
+        private readonly IGetUserByUsernameCommand _getUserByUsername;
+        private readonly ChatHub _chatHub;
 
         public AuthController(UserManager<User> userManager, 
-            SignInManager<User> signInManager, ISetUserStatusCommand setUserStatus)
+            SignInManager<User> signInManager, ISetUserStatusCommand setUserStatus,
+            ChatHub chatHub, IGetUserByUsernameCommand getUserByUsernameCommand)
         {
             _userManager = userManager;
             _signInManager = signInManager;
             _setUserStatus = setUserStatus;
+            _chatHub = chatHub;
+            _getUserByUsername = getUserByUsernameCommand;
         }
 
         public IActionResult LoginPage()
@@ -39,6 +45,8 @@ namespace ChatAppAsp.Controllers
                 if (result.Succeeded)
                 {
                     await _setUserStatus.Execute(user.Username, true);
+                    var profileUpdate = await _getUserByUsername.Execute(user.Username);
+                    await _chatHub.SendProfile(profileUpdate);
                     return RedirectToAction("Index", "Home");
                 }
                   
@@ -80,6 +88,8 @@ namespace ChatAppAsp.Controllers
                         if (resultLogin.Succeeded)
                         {
                             await _setUserStatus.Execute(user.Username, true);
+                            var profileUpdate = await _getUserByUsername.Execute(user.Username);
+                            await _chatHub.SendProfile(profileUpdate);
                             return RedirectToAction("Index", "Home");
                         }
              
@@ -104,6 +114,8 @@ namespace ChatAppAsp.Controllers
         {
             await _signInManager.SignOutAsync();
             await _setUserStatus.Execute(username, false);
+            var profileUpdate = await _getUserByUsername.Execute(username);
+            await _chatHub.SendProfile(profileUpdate);
             return RedirectToAction("Index", "Home");
         }
     }

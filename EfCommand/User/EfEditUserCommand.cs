@@ -29,6 +29,7 @@ namespace EfCommand.User
                         throw new EntityAlreadyExistException("User");
 
                     user.UserName = request.Username;
+                    user.NormalizedUserName = request.Username.ToUpper();
                 }               
             }
 
