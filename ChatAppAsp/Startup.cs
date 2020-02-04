@@ -37,6 +37,10 @@ namespace ChatAppAsp
         {
             services.AddControllersWithViews();
 
+            services.AddDbContext<Context>(options =>
+                options.UseSqlServer(
+                    Configuration.GetConnectionString("SqlServerKey")));
+
             services.AddIdentity<User, Role>(config => 
             {
                 config.Password.RequireDigit = false;

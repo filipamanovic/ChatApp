@@ -11,9 +11,10 @@ namespace DataAccess
     public class Context : IdentityDbContext<User, Role, int>
     {
         public DbSet<Message> Messages { get; set; }
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+
+        public Context(DbContextOptions<Context> options)
+           : base(options)
         {
-            optionsBuilder.UseSqlServer(@"Data Source=DESKTOP-CF3GPEA\SQLEXPRESS;Initial Catalog=ChatAppV2;Integrated Security=True");    
         }
 
         protected override void OnModelCreating(ModelBuilder builder)
